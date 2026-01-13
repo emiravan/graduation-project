@@ -16,7 +16,7 @@ COMPILER_FLAGS = -Wall -Wfatal-errors -w
 SRC_FILES = $(shell find src/ -name "*.cpp") \
             $(shell find libs/imgui/ -name "*.cpp")
 
-LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -llua5.4
+LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 ######################################################################
 # Makefile rules
