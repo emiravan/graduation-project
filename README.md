@@ -8,7 +8,7 @@ A custom 2D Game Engine built with C++17, implementing an Entity-Component-Syste
 
 * **src/**: Source code (Game loop, ECS, Components, Systems).
 * **assets/**: Sprites, fonts, and tilemaps.
-* **libs/**: Third-party libraries (GLM, ImGui, Sol).
+* **libs/**: Third-party libraries (GLM, ImGui).
 * **Makefile**: Build automation script.
 
 ## 🛠 Dependencies
