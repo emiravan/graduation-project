@@ -3,9 +3,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_sdl.h>
-#include <imgui/imgui_sdl.h>
 
 #include <fstream>
 #include <glm/glm.hpp>
@@ -31,7 +28,6 @@
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderColliderSystem.h"
-#include "../Systems/RenderGUISystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/RenderTextSystem.h"
@@ -84,10 +80,6 @@ void Game::Initialize() {
         return;
     }
 
-    // Initialize the ImGui context
-    ImGui::CreateContext();
-    ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
-
     // Initialize the camera view with the entire screen area
     camera.x = 0;
     camera.y = 0;
@@ -101,15 +93,6 @@ void Game::Initialize() {
 void Game::ProcessInput() {
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent)) {
-        // ImGui SDL input
-        ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
-        ImGuiIO& io = ImGui::GetIO();
-        int mouseX, mouseY;
-        const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
-        io.MousePos = ImVec2(mouseX, mouseY);
-        io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
-        io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
-
         // Handle core SDL events (close window, key pressed, etc.)
         switch (sdlEvent.type) {
             case SDL_QUIT:
@@ -142,7 +125,6 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<ProjectileLifecycleSystem>();
     registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<RenderHealthBarSystem>();
-    registry->AddSystem<RenderGUISystem>();
 
     // Adding assets to the asset store
     assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-right.png");
@@ -340,7 +322,6 @@ void Game::Render() {
     registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
-        registry->GetSystem<RenderGUISystem>().Update(registry, camera);
     }
 
     SDL_RenderPresent(renderer);
@@ -356,8 +337,6 @@ void Game::Run() {
 }
 
 void Game::Destroy() {
-    ImGuiSDL::Deinitialize();
-    ImGui::DestroyContext();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
